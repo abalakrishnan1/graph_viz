@@ -3,18 +3,28 @@ import {
     PriorityQueue
 } from '@datastructures-js/priority-queue';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Node from './Node.jsx';
 import {v4 as uuidv4} from 'uuid';
 
-const GraphGrid = (props) => {
-    const defaultGrid = [];
+const defaultGrid = [];
 
+for (let i=0; i<20; i++) {
+        for(let j=0; j<20; j++) {
+            defaultGrid.push({i: i, j: j, id: uuidv4()})
+        }
+}
+
+const GraphGrid = (props) => {
+    const [grid, setGrid] = useState(defaultGrid);
     const [mode, setMode] = useState('idle')
     const [start, setStart] = useState({})
     const [finish, setFinish] = useState({})
-    const [openSet, setOpen] = useState()
+    const openSet = useRef()
+    const cameFrom = useRef()
+    const gScore = useRef()
 
+    
     const handleGridClick = (i, j) => {
         switch(mode) {
             case 'start':
@@ -28,24 +38,25 @@ const GraphGrid = (props) => {
         }
     }
 
-    for (let i=0; i<20; i++) {
-        for(let j=0; j<20; j++) {
-            defaultGrid.push(
-                <Node
-                    i={i}
-                    j={j}
-                    key={uuidv4()}
-                    isStart={start.i === i && start.j === j}
-                    isFinish={finish.i === i && finish.j === j}
-                    handleGridClick={handleGridClick}
-                />
-            );
-        }
+    // <Node
+    //                 i={i}
+    //                 j={j}
+    //                 key={uuidv4()}
+    //                 isStart={start.i === i && start.j === j}
+    //                 isFinish={finish.i === i && finish.j === j}
+    //                 handleGridClick={handleGridClick}
+    //             />
+
+    const h = (node) => {
+        return Math.sqrt(Math.pow(node.i - finish.i, 2)
+             + Math.pow(node.j - finish.j, 2))
     }
 
     const search = () => {
-        let openSet = PriorityQueue()
-        
+        cameFrom.current = new Map([])
+        gScore.current = new Map()
+        gScore[start] = 0
+
     }
 
     return (
@@ -53,7 +64,15 @@ const GraphGrid = (props) => {
             <Center height='75vh'>
             <Grid templateColumns='repeat(20, 1fr)' templateRows='repeat(20, 1fr)' gridGap={'1'}>
             
-                {defaultGrid}
+                {grid.map((cell) => (
+                    <Node 
+                        i={cell.i}
+                        j={cell.j}
+                        isStart={start.i === cell.i && start.j === cell.j}
+                        isFinish={finish.i === cell.i && finish.j === cell.j}
+                        handleGridClick={handleGridClick}
+                    ></Node>
+                ))}
                 
             </Grid>
             </Center>
@@ -64,7 +83,7 @@ const GraphGrid = (props) => {
                 <Button colorScheme='green' onClick={() => setMode('finish')}>
                     Set Finish
                 </Button>
-                <Button>
+                <Button onClick={search()}>
                     Go
                 </Button>
             </Stack>
