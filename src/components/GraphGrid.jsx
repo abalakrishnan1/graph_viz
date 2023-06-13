@@ -1,4 +1,8 @@
-import { Grid, GridItem, Center, Button, Stack } from '@chakra-ui/react';
+import { Grid, Center, Button, Stack } from '@chakra-ui/react';
+import {
+    PriorityQueue
+} from '@datastructures-js/priority-queue';
+
 import { useState } from 'react';
 import Node from './Node.jsx';
 import {v4 as uuidv4} from 'uuid';
@@ -9,6 +13,7 @@ const GraphGrid = (props) => {
     const [mode, setMode] = useState('idle')
     const [start, setStart] = useState({})
     const [finish, setFinish] = useState({})
+    const [openSet, setOpen] = useState()
 
     const handleGridClick = (i, j) => {
         switch(mode) {
@@ -36,6 +41,11 @@ const GraphGrid = (props) => {
                 />
             );
         }
+    }
+
+    const search = () => {
+        let openSet = PriorityQueue()
+        
     }
 
     return (

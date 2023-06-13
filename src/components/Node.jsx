@@ -14,7 +14,7 @@ const Node = ({i, j, handleGridClick, isStart, isFinish}) => {
             h='5' 
             w='5'
             borderWidth='1px'
-            borderColor='white'
+            borderColor='black'
             bgColor={
                 (() => {
                     if (isStart) return 'red';
