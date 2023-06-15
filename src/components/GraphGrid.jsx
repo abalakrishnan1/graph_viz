@@ -81,16 +81,19 @@ const GraphGrid = (props) => {
             }
         }
 
-        console.log("here")
         openSet.current = new PriorityQueue((a, b) => {
             return fScore.current.get(a) < fScore.current.get(b)
         })
 
+        openSet.current.enqueue(start)
 
-        while (openSet.current.isEmpty()) {
-            let current = openSet.current[0]
+        while (!openSet.current.isEmpty()) {
+            console.log("in loop")
+            let current = openSet.current.front()
+
             if (current.i === finish.i && current.j === finish.j) {
                 console.log("DONE DONE DONE")
+                return true
             }
             openSet.current.remove((node) => node.i === current.i && node.j === current.j)
 
@@ -103,20 +106,23 @@ const GraphGrid = (props) => {
                     
                     let neighbor_node = {i: current.i + neighbor.i, j: current.j + neighbor.j}
 
+                    console.log(neighbor_node)
                     let tentativeG = gScore.current.get(current) + neighbor.w
                     if (tentativeG < gScore.current.get(neighbor_node)) {
+
                         cameFrom.current.set(neighbor, current)
                         gScore.current.set(neighbor, tentativeG)
                         fScore.current.set(neighbor, tentativeG + h(neighbor))
-                    
                         
+                        if (![...openSet.current].includes(neighbor_node)) {
+                            openSet.current.enqueue(neighbor_node)
+                        }
                     }
                  }
             })
         }
 
-
-        
+        return false
         
     }
 
@@ -132,6 +138,7 @@ const GraphGrid = (props) => {
                         isStart={start.i === cell.i && start.j === cell.j}
                         isFinish={finish.i === cell.i && finish.j === cell.j}
                         handleGridClick={handleGridClick}
+                        key = {cell.id}
                     ></Node>
                 ))}
                 
