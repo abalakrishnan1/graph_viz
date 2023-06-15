@@ -20,6 +20,7 @@ const GraphGrid = (props) => {
     const [mode, setMode] = useState('idle')
     const [start, setStart] = useState({})
     const [finish, setFinish] = useState({})
+
     const openSet = useRef()
     const cameFrom = useRef()
     const gScore = useRef()
@@ -60,28 +61,30 @@ const GraphGrid = (props) => {
                 
         for (let i = 0; i < 20; i++) {
             for (let j = 0; j < 20; j++) {
-                if (i == start.i && j == start.j) {
-                    gScore.current.set({i: i, j: j}, 0)
-                    fScore.current.set({i: i, j: j}, h(start))
+                if (i === start.i && j === start.j) {
+                    gScore.current.set({i, j}, 0)
+                    fScore.current.set({i, j}, h(start))
                 } else {
-                    gScore.current.set({i: i, j: j}, Infinity)
-                    fScore.current.set({i: i, j: j}, Infinity)
+                    gScore.current.set({i, j}, Infinity)
+                    fScore.current.set({i, j}, Infinity)
                 }
             }
         }
 
+        console.log("here")
         openSet.current = new PriorityQueue((a, b) => {
             return fScore.current.get(a) < fScore.current.get(b)
         })
 
 
-        while (openSet.current.length != 0) {
+        while (openSet.current.length !== 0) {
             let current = openSet.current[0]
-            if (current == {i: finish.i, j: finish.j}) {
+            if (current === finish) {
                 console.log("DONE DONE DONE")
             }
             openSet.current.pop()
         }
+    
         
         
     }
