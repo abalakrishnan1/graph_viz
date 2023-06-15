@@ -23,6 +23,7 @@ const GraphGrid = (props) => {
     const openSet = useRef()
     const cameFrom = useRef()
     const gScore = useRef()
+    const fScore = useRef()
 
     
     const handleGridClick = (i, j) => {
@@ -53,10 +54,36 @@ const GraphGrid = (props) => {
     }
 
     const search = () => {
-        cameFrom.current = new Map([])
+        cameFrom.current = new Map()
         gScore.current = new Map()
-        gScore[start] = 0
+        fScore.current = new Map()
+                
+        for (let i = 0; i < 20; i++) {
+            for (let j = 0; j < 20; j++) {
+                if (i == start.i && j == start.j) {
+                    gScore.current.set({i: i, j: j}, 0)
+                    fScore.current.set({i: i, j: j}, h(start))
+                } else {
+                    gScore.current.set({i: i, j: j}, Infinity)
+                    fScore.current.set({i: i, j: j}, Infinity)
+                }
+            }
+        }
 
+        openSet.current = new PriorityQueue((a, b) => {
+            return fScore.current.get(a) < fScore.current.get(b)
+        })
+
+
+        while (openSet.current.length != 0) {
+            let current = openSet.current[0]
+            if (current == {i: finish.i, j: finish.j}) {
+                console.log("DONE DONE DONE")
+            }
+            openSet.current.pop()
+        }
+        
+        
     }
 
     return (
@@ -83,7 +110,7 @@ const GraphGrid = (props) => {
                 <Button colorScheme='green' onClick={() => setMode('finish')}>
                     Set Finish
                 </Button>
-                <Button onClick={search()}>
+                <Button onClick={search}>
                     Go
                 </Button>
             </Stack>
