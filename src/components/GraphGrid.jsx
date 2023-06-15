@@ -8,6 +8,16 @@ import Node from './Node.jsx';
 import {v4 as uuidv4} from 'uuid';
 
 const defaultGrid = [];
+const neighbors = [
+    {i: 0, j: 1, w: 10},
+    {i: 1, j: 1, w: 14},
+    {i: 1, j: 0, w: 10},
+    {i: 1, j:-1, w: 14},
+    {i: 0, j: -1, w: 10},
+    {i: -1, j: -1, w: 14},
+    {i: -1, j: 0, w: 10},
+    {i: -1, j: 1, w: 14}
+];
 
 for (let i=0; i<20; i++) {
         for(let j=0; j<20; j++) {
@@ -30,11 +40,11 @@ const GraphGrid = (props) => {
     const handleGridClick = (i, j) => {
         switch(mode) {
             case 'start':
-                setStart({i, j})
+                setStart({i: i, j: j})
                 console.log("SET START")
                 break;
             case 'finish':
-                setFinish({i, j})
+                setFinish({i: i, j: j})
                 console.log("SET FINISH")
                 break;
         }
@@ -62,11 +72,11 @@ const GraphGrid = (props) => {
         for (let i = 0; i < 20; i++) {
             for (let j = 0; j < 20; j++) {
                 if (i === start.i && j === start.j) {
-                    gScore.current.set({i, j}, 0)
-                    fScore.current.set({i, j}, h(start))
+                    gScore.current.set({i: i, j: j}, 0)
+                    fScore.current.set({i: i, j: j}, h(start))
                 } else {
-                    gScore.current.set({i, j}, Infinity)
-                    fScore.current.set({i, j}, Infinity)
+                    gScore.current.set({i: i, j: j}, Infinity)
+                    fScore.current.set({i: i, j: j}, Infinity)
                 }
             }
         }
@@ -77,14 +87,35 @@ const GraphGrid = (props) => {
         })
 
 
-        while (openSet.current.length !== 0) {
+        while (openSet.current.isEmpty()) {
             let current = openSet.current[0]
-            if (current === finish) {
+            if (current.i === finish.i && current.j === finish.j) {
                 console.log("DONE DONE DONE")
             }
-            openSet.current.pop()
+            openSet.current.remove((node) => node.i === current.i && node.j === current.j)
+
+            neighbors.forEach((neighbor) => {
+                if (
+                    current.i + neighbor.i >= 0
+                    && current.i + neighbor.i < 20
+                    && current.j + neighbor.j >= 0
+                    && current.j + neighbor.j < 20) {
+                    
+                    let neighbor_node = {i: current.i + neighbor.i, j: current.j + neighbor.j}
+
+                    let tentativeG = gScore.current.get(current) + neighbor.w
+                    if (tentativeG < gScore.current.get(neighbor_node)) {
+                        cameFrom.current.set(neighbor, current)
+                        gScore.current.set(neighbor, tentativeG)
+                        fScore.current.set(neighbor, tentativeG + h(neighbor))
+                    
+                        
+                    }
+                 }
+            })
         }
-    
+
+
         
         
     }
