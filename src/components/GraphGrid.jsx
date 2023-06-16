@@ -81,6 +81,8 @@ const GraphGrid = (props) => {
             }
         }
 
+        console.log(gScore)
+        
         openSet.current = new PriorityQueue((a, b) => {
             return fScore.current.get(a) < fScore.current.get(b)
         })
