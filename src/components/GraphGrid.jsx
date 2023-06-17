@@ -89,14 +89,17 @@ const GraphGrid = (props) => {
 
         openSet.current.enqueue(start)
 
-        let current; 
+        let current_done; 
 
         while (!openSet.current.isEmpty()) {
             // console.log(openSet.current.toArray())
-            current = openSet.current.front()
+            let current = openSet.current.front()
+
+            console.log("Current: ", current)
             if (current.i === finish.i && current.j === finish.j) {
                 console.log("DONE DONE DONE")
-                return true
+                current_done = current
+                break
             }
             openSet.current.remove((node) => node.i === current.i && node.j === current.j)
 
@@ -128,19 +131,16 @@ const GraphGrid = (props) => {
             })
         }
 
-        console.log("HERE")
-        while (cameFrom.current.has(JSON.stringify(current))) {
-            console.log("here")
+        while (cameFrom.current.has(JSON.stringify(current_done))) {
             const new_grid = grid.map(elem => {
-                if (elem.i === current.i && elem.j === current.j) {
+                if (elem.i === current_done.i && elem.j === current_done.j) {
                     return {i: elem.i, j: elem.j, id: elem.id, path: true}
-                }
+                } else return elem
             })
 
             setGrid(new_grid)
-            current = JSON.parse(cameFrom.current.get(JSON.stringify(current)))
+            current_done = JSON.parse(cameFrom.current.get(JSON.stringify(current_done)))
         }
-        
     }
 
     return (
@@ -155,7 +155,7 @@ const GraphGrid = (props) => {
                         isStart={start.i === cell.i && start.j === cell.j}
                         isFinish={finish.i === cell.i && finish.j === cell.j}
                         handleGridClick={handleGridClick}
-                        path={cell.path}
+                        path = {cell.path}
                         key = {cell.id}
                     ></Node>
                 ))}
