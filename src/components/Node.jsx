@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { GridItem } from '@chakra-ui/react';
 
-const Node = ({i, j, handleGridClick, isStart, isFinish}) => {
+const Node = ({i, j, handleGridClick, isStart, isFinish, path}) => {
 
     const handleNodeClick = (e) => {
         console.log(`i: ${i}, j: ${j}`)
@@ -18,6 +17,7 @@ const Node = ({i, j, handleGridClick, isStart, isFinish}) => {
             bgColor={
                 (() => {
                     if (isStart) return 'red';
+                    else if (path) return 'blue';
                     else if (isFinish) return 'green';
                 }
                 )()}
