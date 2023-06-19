@@ -87,7 +87,7 @@ const GraphGrid = (props) => {
 
         for (let i = 0; i < 20; i++) {
             for (let j = 0; j < 20; j++) {
-                gScore.current.set(JSON.stringify({i: i, j: j}), 0)
+                gScore.current.set(JSON.stringify({i: i, j: j}), dist({i: i, j: j}, start))
                 fScore.current.set(JSON.stringify({i: i, j: j}), 400)
             }
         }
