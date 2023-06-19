@@ -32,6 +32,7 @@ const GraphGrid = (props) => {
     const [finish, setFinish] = useState({})
 
     const openSet = useRef()
+    const closedSet = useRef([])
     const cameFrom = useRef()
     const gScore = useRef()
     const fScore = useRef()
@@ -66,6 +67,12 @@ const GraphGrid = (props) => {
              + Math.pow(node.j - finish.j, 2))
     }
 
+    const dist = (a, b) => {
+        return Math.sqrt(Math.pow(a.i - b.i, 2)
+             + Math.pow(a.j - b.j, 2))
+    }
+
+
     const search = () => {
         cameFrom.current = new Map()
         gScore.current = new Map()
@@ -87,60 +94,66 @@ const GraphGrid = (props) => {
             return fScore.current.get(JSON.stringify(a)) < fScore.current.get(JSON.stringify(b))
         })
 
-        openSet.current.enqueue(start)
+        openSet.current.enqueue(JSON.stringify(start))
 
         let current_done; 
 
         while (!openSet.current.isEmpty()) {
             // console.log(openSet.current.toArray())
-            let current = openSet.current.front()
+            let current = JSON.parse(openSet.current.front())
 
             console.log("Current: ", current)
             if (current.i === finish.i && current.j === finish.j) {
                 console.log("DONE DONE DONE")
                 current_done = current
-                break
+                
             }
-            openSet.current.remove((node) => node.i === current.i && node.j === current.j)
-
+            openSet.current.remove((node) => JSON.parse(node).i === current.i && JSON.parse(node).j === current.j)
+            closedSet.current.push(JSON.stringify(current))
             neighbors.forEach((neighbor) => {
-
+                let skip = false
                 // check if in bounds neighbor
                 if (
                     current.i + neighbor.i >= 0
                     && current.i + neighbor.i < 20
                     && current.j + neighbor.j >= 0
-                    && current.j + neighbor.j < 20) {
+                    && current.j + neighbor.j < 20
+                    ) {
                     
                     let neighbor_node = {i: current.i + neighbor.i, j: current.j + neighbor.j}
-
-                    // console.log("neighbor node: ", neighbor_node)
-                    let tentativeG = gScore.current.get(JSON.stringify(current)) + neighbor.w
-                    // console.log("Tentative G value: ", tentativeG)
-                    if (tentativeG < gScore.current.get(JSON.stringify(neighbor_node))) {
-
-                        cameFrom.current.set(JSON.stringify(neighbor_node), JSON.stringify(current))
-                        gScore.current.set(JSON.stringify(neighbor_node), tentativeG)
-                        fScore.current.set(JSON.stringify(neighbor_node), tentativeG + h(neighbor))
-
+                    
+                    if (!closedSet.current.includes(JSON.stringify(neighbor_node))) {
+                        // console.log("neighbor node: ", neighbor_node)
+                        let tentativeG = gScore.current.get(JSON.stringify(current)) + dist(neighbor_node, current)
+                        // console.log("Tentative G value: ", tentativeG)
                         if (!openSet.current.toArray().includes(JSON.stringify(neighbor_node))) {
-                            openSet.current.enqueue(neighbor_node)
+                                openSet.current.enqueue(JSON.stringify(neighbor_node))
+                        } else if (tentativeG >= gScore.current.get(JSON.stringify(neighbor_node))) {
+                            skip = true
+                        }
+
+                        if (!skip) {
+
+                            cameFrom.current.set(JSON.stringify(neighbor_node), JSON.stringify(current))
+                            gScore.current.set(JSON.stringify(neighbor_node), tentativeG)
+                            fScore.current.set(JSON.stringify(neighbor_node), tentativeG + h(neighbor_node))
+
                         }
                     }
                  }
             })
         }
 
+        const new_grid = [...grid]
         while (cameFrom.current.has(JSON.stringify(current_done))) {
-            const new_grid = grid.map(elem => {
-                if (elem.i === current_done.i && elem.j === current_done.j) {
-                    return {i: elem.i, j: elem.j, id: elem.id, path: true}
-                } else return elem
-            })
+            console.log("here")
+            console.log("path: ", current_done)
+            new_grid[current_done.i, current_done.j].path = true
 
-            setGrid(new_grid)
             current_done = JSON.parse(cameFrom.current.get(JSON.stringify(current_done)))
         }
+
+        setGrid(new_grid)
     }
 
     return (
