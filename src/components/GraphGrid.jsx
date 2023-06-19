@@ -32,7 +32,7 @@ const GraphGrid = (props) => {
     const [finish, setFinish] = useState({})
 
     const openSet = useRef()
-    const closedSet = useRef([])
+    const closedSet = useRef()
     const cameFrom = useRef()
     const gScore = useRef()
     const fScore = useRef()
@@ -77,15 +77,16 @@ const GraphGrid = (props) => {
         cameFrom.current = new Map()
         gScore.current = new Map()
         fScore.current = new Map()
-                
+        closedSet.current = []
+
         for (let i = 0; i < 20; i++) {
             for (let j = 0; j < 20; j++) {
                 if (i === start.i && j === start.j) {
                     gScore.current.set(JSON.stringify({i: i, j: j}), 0)
                     fScore.current.set(JSON.stringify({i: i, j: j}), h(start))
                 } else {
-                    gScore.current.set(JSON.stringify({i: i, j: j}), 1600)
-                    fScore.current.set(JSON.stringify({i: i, j: j}), 1600)
+                    gScore.current.set(JSON.stringify({i: i, j: j}), 0)
+                    fScore.current.set(JSON.stringify({i: i, j: j}), 0)
                 }
             }
         }
@@ -108,6 +109,7 @@ const GraphGrid = (props) => {
                 current_done = current
                 
             }
+
             openSet.current.remove((node) => JSON.parse(node).i === current.i && JSON.parse(node).j === current.j)
             closedSet.current.push(JSON.stringify(current))
             neighbors.forEach((neighbor) => {
@@ -144,12 +146,15 @@ const GraphGrid = (props) => {
             })
         }
 
-        const new_grid = [...grid]
+        let new_grid = JSON.parse(JSON.stringify(grid))
+        console.log(new_grid)
         while (cameFrom.current.has(JSON.stringify(current_done))) {
-            console.log("here")
-            console.log("path: ", current_done)
-            new_grid[current_done.i, current_done.j].path = true
-
+            console.log("current_done: ", current_done)
+            new_grid = new_grid.map(elem => {
+                if (current_done.i === elem.i && current_done.j === elem.j) {
+                    return {i: elem.i, j: elem.j, id: elem.id, path: true}
+                } else return elem
+            })
             current_done = JSON.parse(cameFrom.current.get(JSON.stringify(current_done)))
         }
 
