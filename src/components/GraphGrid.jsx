@@ -88,7 +88,7 @@ const GraphGrid = (props) => {
         
         
         openSet.current = new PriorityQueue((a, b) => {
-            return fScore.current.get(JSON.stringify(a)) < fScore.current.get(JSON.stringify(b))
+            return fScore.current.get(a) < fScore.current.get(b) ? -1 : 1;
         })
 
         openSet.current.enqueue(JSON.stringify(start))
@@ -139,6 +139,11 @@ const GraphGrid = (props) => {
                         }
                     }
                  }
+            })
+
+            let array = openSet.current.toArray()
+            array.forEach((elem) => {
+                console.log(fScore.current.get(elem))
             })
         }
 
