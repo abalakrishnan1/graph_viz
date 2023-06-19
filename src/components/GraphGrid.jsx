@@ -88,13 +88,14 @@ const GraphGrid = (props) => {
         for (let i = 0; i < 20; i++) {
             for (let j = 0; j < 20; j++) {
                 gScore.current.set(JSON.stringify({i: i, j: j}), 0)
-                fScore.current.set(JSON.stringify({i: i, j: j}), 0)
+                fScore.current.set(JSON.stringify({i: i, j: j}), 400)
             }
         }
         
         
         openSet.current = new PriorityQueue((a, b) => {
-            return fScore.current.get(a) < fScore.current.get(b) ? -1 : 1;
+            if (fScore.current.get(a) !== fScore.current.get(b)) return fScore.current.get(a) < fScore.current.get(b) ? -1 : 1;
+            else return gScore.current.get(a) > gScore.current.get(b) ? -1 : 1;
         })
 
         openSet.current.enqueue(JSON.stringify(start))
@@ -109,8 +110,7 @@ const GraphGrid = (props) => {
             if (current.i === finish.i && current.j === finish.j) {
                 console.log("DONE DONE DONE")
                 current_done = current
-                break
-                
+                break                
             }
 
             openSet.current.remove((node) => JSON.parse(node).i === current.i && JSON.parse(node).j === current.j)
@@ -131,6 +131,7 @@ const GraphGrid = (props) => {
                         // console.log("neighbor node: ", neighbor_node)
                         let tentativeG = gScore.current.get(JSON.stringify(current)) + dist(neighbor_node, current)
                         // console.log("Tentative G value: ", tentativeG)
+                        console.log(tentativeG)
                         if (!openSet.current.toArray().includes(JSON.stringify(neighbor_node))) {
                                 openSet.current.enqueue(JSON.stringify(neighbor_node))
                         } else if (tentativeG >= gScore.current.get(JSON.stringify(neighbor_node))) {
@@ -147,20 +148,6 @@ const GraphGrid = (props) => {
                     }
                  }
             })
-
-            console.log('here')
-            let array = openSet.current.toArray()
-            let new_grid = JSON.parse(JSON.stringify(grid))
-            array.forEach((a) => {
-                new_grid = new_grid.map(elem => {
-                    if (elem.i === JSON.parse(a).i && elem.j === JSON.parse(a).j) {
-                        return {i: elem.i, j: elem.j, id: elem.id, path: false, open: true}
-                    } else return elem
-                })
-                
-            })
-
-            setGrid(new_grid)
         }
 
         let new_grid = JSON.parse(JSON.stringify(grid))
@@ -172,7 +159,6 @@ const GraphGrid = (props) => {
                     return {i: elem.i, j: elem.j, id: elem.id, path: true, open: false}
                 } else return elem
             })
-
             current_done = JSON.parse(cameFrom.current.get(JSON.stringify(current_done)))
         }
 

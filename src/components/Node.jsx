@@ -1,4 +1,4 @@
-import { GridItem } from '@chakra-ui/react';
+import { GridItem, color } from '@chakra-ui/react';
 
 const Node = ({i, j, handleGridClick, isStart, isFinish, path, open}) => {
 
