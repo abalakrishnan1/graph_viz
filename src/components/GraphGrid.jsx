@@ -8,6 +8,13 @@ import Node from './Node.jsx';
 import {v4 as uuidv4} from 'uuid';
 
 const defaultGrid = [];
+
+for (let i=0; i<20; i++) {
+        for(let j=0; j<20; j++) {
+            defaultGrid.push({i: i, j: j, id: uuidv4(), path: false})
+        }
+}
+
 const neighbors = [
     {i: 0, j: 1, w: 10},
     {i: 1, j: 1, w: 14},
@@ -18,12 +25,6 @@ const neighbors = [
     {i: -1, j: 0, w: 10},
     {i: -1, j: 1, w: 14}
 ];
-
-for (let i=0; i<20; i++) {
-        for(let j=0; j<20; j++) {
-            defaultGrid.push({i: i, j: j, id: uuidv4(), path: false})
-        }
-}
 
 const GraphGrid = (props) => {
     const [grid, setGrid] = useState(defaultGrid);
@@ -37,7 +38,6 @@ const GraphGrid = (props) => {
     const gScore = useRef()
     const fScore = useRef()
 
-    
     const handleGridClick = (i, j) => {
         switch(mode) {
             case 'start':
@@ -81,15 +81,11 @@ const GraphGrid = (props) => {
 
         for (let i = 0; i < 20; i++) {
             for (let j = 0; j < 20; j++) {
-                if (i === start.i && j === start.j) {
-                    gScore.current.set(JSON.stringify({i: i, j: j}), 0)
-                    fScore.current.set(JSON.stringify({i: i, j: j}), h(start))
-                } else {
-                    gScore.current.set(JSON.stringify({i: i, j: j}), 0)
-                    fScore.current.set(JSON.stringify({i: i, j: j}), 0)
-                }
+                gScore.current.set(JSON.stringify({i: i, j: j}), 0)
+                fScore.current.set(JSON.stringify({i: i, j: j}), 0)
             }
         }
+        
         
         openSet.current = new PriorityQueue((a, b) => {
             return fScore.current.get(JSON.stringify(a)) < fScore.current.get(JSON.stringify(b))
@@ -189,6 +185,12 @@ const GraphGrid = (props) => {
                 </Button>
                 <Button onClick={search}>
                     Go
+                </Button>
+                <Button onClick={() => {
+                    setGrid(defaultGrid)
+                    console.log("RESET")
+                }}> 
+                    Reset
                 </Button>
             </Stack>
         </>
