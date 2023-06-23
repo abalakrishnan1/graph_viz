@@ -39,7 +39,7 @@ const GraphGrid = (props) => {
     const gScore = useRef()
     const fScore = useRef()
 
-    const handleGridClick = (i, j) => {
+    const handleGridClick = async (i, j) => {
         switch(mode) {
             case 'start':
                 setStart({i: i, j: j})

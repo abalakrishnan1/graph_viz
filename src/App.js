@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Text } from '@chakra-ui/react';
 import GraphGrid from './components/GraphGrid.jsx';
 
 function App() {
