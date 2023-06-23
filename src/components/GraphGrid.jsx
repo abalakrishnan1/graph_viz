@@ -49,9 +49,16 @@ const GraphGrid = (props) => {
                 setFinish({i: i, j: j})
                 console.log("SET FINISH")
                 break;
-            // case 'wall':
+            case 'wall':
             //     let twall = JSON.parse(JSON.stringify(wall))
             //     twall[i][j] = True
+                let new_grid = JSON.parse(JSON.stringify(grid))
+                new_grid = new_grid.map((elem) => {
+                    if (elem.i === i && elem.j === j) {
+                        return {i: elem.i, j: elem.j, id: elem.id, path: false, wall: true, open: false}
+                    } else return elem
+                })
+                setGrid(new_grid)
 
             default:
                 break;
@@ -81,8 +88,6 @@ const GraphGrid = (props) => {
         return new Promise((resolve)=>setTimeout(resolve,time)
         )
     }
-
-
 
     const search = async () => {
         cameFrom.current = new Map()
@@ -162,7 +167,7 @@ const GraphGrid = (props) => {
             // console.log("current_done: ", current_done)
             new_grid = new_grid.map(elem => {
                 if (current_done.i === elem.i && current_done.j === elem.j) {
-                    return {i: elem.i, j: elem.j, id: elem.id, path: true, open: false}
+                    return {i: elem.i, j: elem.j, id: elem.id, path: true, wall: false, open: false}
                 } else return elem
             })
             current_done = JSON.parse(cameFrom.current.get(JSON.stringify(current_done)))
@@ -185,6 +190,7 @@ const GraphGrid = (props) => {
                         handleGridClick={handleGridClick}
                         path = {cell.path}
                         open = {cell.open}
+                        wall = {cell.wall}
                         key = {cell.id}
                     ></Node>
                 ))}
