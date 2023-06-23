@@ -29,6 +29,7 @@ const neighbors = [
 const GraphGrid = (props) => {
     const [grid, setGrid] = useState(defaultGrid);
     const [mode, setMode] = useState('idle')
+    const [wall, setWall] = useState(new Array(20).fill(new Array(20)))
     const [start, setStart] = useState({})
     const [finish, setFinish] = useState({})
 
@@ -48,6 +49,10 @@ const GraphGrid = (props) => {
                 setFinish({i: i, j: j})
                 console.log("SET FINISH")
                 break;
+            // case 'wall':
+            //     let twall = JSON.parse(JSON.stringify(wall))
+            //     twall[i][j] = True
+
             default:
                 break;
         }
@@ -150,7 +155,7 @@ const GraphGrid = (props) => {
             })
         }
 
-        
+
         let new_grid = JSON.parse(JSON.stringify(grid))
         // console.log(new_grid)
         while (cameFrom.current.has(JSON.stringify(current_done))) {
@@ -193,10 +198,15 @@ const GraphGrid = (props) => {
                 <Button colorScheme='green' onClick={() => setMode('finish')}>
                     Set Finish
                 </Button>
+                <Button colorScheme='blackAlpha' onClick={() => setMode('wall')}>
+                    Set Wall
+                </Button>
                 <Button onClick={search}>
                     Go
                 </Button>
                 <Button onClick={() => {
+                    setFinish({})
+                    setStart({})
                     setGrid(defaultGrid)
                     console.log("RESET")
                 }}> 
