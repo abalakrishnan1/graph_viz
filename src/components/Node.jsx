@@ -9,7 +9,7 @@ const Node = ({i, j, handleGridClick, isStart, isFinish, path, open, wall}) => {
 
     return (
         <GridItem 
-            onClick={handleNodeClick}
+            onMouseDown={handleNodeClick}
             h='5' 
             w='5'
             borderWidth='1px'

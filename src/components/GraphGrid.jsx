@@ -29,7 +29,7 @@ const neighbors = [
 const GraphGrid = (props) => {
     const [grid, setGrid] = useState(defaultGrid);
     const [mode, setMode] = useState('idle')
-    const [wall, setWall] = useState(new Array(20).fill(new Array(20)))
+    const [wall, setWall] = useState(new Array(20).fill(new Array(20).fill(false)))
     const [start, setStart] = useState({})
     const [finish, setFinish] = useState({})
 
@@ -50,16 +50,13 @@ const GraphGrid = (props) => {
                 console.log("SET FINISH")
                 break;
             case 'wall':
-            //     let twall = JSON.parse(JSON.stringify(wall))
-            //     twall[i][j] = True
-                let new_grid = JSON.parse(JSON.stringify(grid))
-                new_grid = new_grid.map((elem) => {
-                    if (elem.i === i && elem.j === j) {
-                        return {i: elem.i, j: elem.j, id: elem.id, path: false, wall: true, open: false}
-                    } else return elem
-                })
-                setGrid(new_grid)
-
+                if(JSON.stringify({i: i, j: j}) !== JSON.stringify(start)
+                && JSON.stringify({i: i, j: j}) !== JSON.stringify(finish)) {
+                    let twall = JSON.parse(JSON.stringify(wall))
+                    twall[i][j] = !twall[i][j]
+                    setWall(twall)
+                    console.log("SET WALL")
+                }
             default:
                 break;
         }
@@ -133,10 +130,10 @@ const GraphGrid = (props) => {
                     && current.i + neighbor.i < 20
                     && current.j + neighbor.j >= 0
                     && current.j + neighbor.j < 20
+                    && !wall[current.i + neighbor.i][current.j + neighbor.j]
                     ) {
                     
                     let neighbor_node = {i: current.i + neighbor.i, j: current.j + neighbor.j}
-                    
                     if (!closedSet.current.includes(JSON.stringify(neighbor_node))) {
                         // console.log("neighbor node: ", neighbor_node)
                         let tentativeG = gScore.current.get(JSON.stringify(current)) + dist(neighbor_node, current)
@@ -167,7 +164,7 @@ const GraphGrid = (props) => {
             // console.log("current_done: ", current_done)
             new_grid = new_grid.map(elem => {
                 if (current_done.i === elem.i && current_done.j === elem.j) {
-                    return {i: elem.i, j: elem.j, id: elem.id, path: true, wall: false, open: false}
+                    return {i: elem.i, j: elem.j, id: elem.id, path: true, open: false}
                 } else return elem
             })
             current_done = JSON.parse(cameFrom.current.get(JSON.stringify(current_done)))
@@ -190,7 +187,7 @@ const GraphGrid = (props) => {
                         handleGridClick={handleGridClick}
                         path = {cell.path}
                         open = {cell.open}
-                        wall = {cell.wall}
+                        wall = {wall[cell.i][cell.j]}
                         key = {cell.id}
                     ></Node>
                 ))}
@@ -213,6 +210,7 @@ const GraphGrid = (props) => {
                 <Button onClick={() => {
                     setFinish({})
                     setStart({})
+                    setWall(new Array(20).fill(new Array(20).fill(false)))
                     setGrid(defaultGrid)
                     console.log("RESET")
                 }}> 
