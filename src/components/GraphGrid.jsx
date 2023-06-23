@@ -150,6 +150,7 @@ const GraphGrid = (props) => {
             })
         }
 
+        
         let new_grid = JSON.parse(JSON.stringify(grid))
         // console.log(new_grid)
         while (cameFrom.current.has(JSON.stringify(current_done))) {
