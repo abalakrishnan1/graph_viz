@@ -31,6 +31,7 @@ const GraphGrid = (props) => {
     const [mode, setMode] = useState('idle')
     const [wall, setWall] = useState(new Array(20).fill(new Array(20).fill(false)))
     const [start, setStart] = useState({})
+    const [drag, setDrag] = useState(false)
     const [finish, setFinish] = useState({})
 
     const openSet = useRef()
@@ -38,6 +39,16 @@ const GraphGrid = (props) => {
     const cameFrom = useRef()
     const gScore = useRef()
     const fScore = useRef()
+
+    const handleMouseEnter = async (i, j) => {
+        if(JSON.stringify({i: i, j: j}) !== JSON.stringify(start)
+            && JSON.stringify({i: i, j: j}) !== JSON.stringify(finish)) {
+                let twall = JSON.parse(JSON.stringify(wall))
+                twall[i][j] = !twall[i][j]
+                setWall(twall)
+                console.log("SET WALL")
+        }
+    }
 
     const handleGridClick = async (i, j) => {
         switch(mode) {
@@ -51,10 +62,12 @@ const GraphGrid = (props) => {
                 break;
             case 'wall':
                 if(JSON.stringify({i: i, j: j}) !== JSON.stringify(start)
-                && JSON.stringify({i: i, j: j}) !== JSON.stringify(finish)) {
+                && JSON.stringify({i: i, j: j}) !== JSON.stringify(finish)
+                ) {
                     let twall = JSON.parse(JSON.stringify(wall))
-                    twall[i][j] = !twall[i][j]
+                    if (!drag) twall[i][j] = !twall[i][j]
                     setWall(twall)
+                    setDrag(!drag)
                     console.log("SET WALL")
                 }
             default:
@@ -175,7 +188,7 @@ const GraphGrid = (props) => {
 
     return (
         <>
-            <Center height='75vh'>
+            <Center height='75vh' width='auto'>
             <Grid templateColumns='repeat(20, 1fr)' templateRows='repeat(20, 1fr)' gridGap={'1'}>
             
                 {grid.map((cell) => (
@@ -184,7 +197,9 @@ const GraphGrid = (props) => {
                         j={cell.j}
                         isStart={start.i === cell.i && start.j === cell.j}
                         isFinish={finish.i === cell.i && finish.j === cell.j}
+                        isDrag={drag}
                         handleGridClick={handleGridClick}
+                        handleMouseEnter={handleMouseEnter}
                         path = {cell.path}
                         open = {cell.open}
                         wall = {wall[cell.i][cell.j]}
@@ -212,6 +227,7 @@ const GraphGrid = (props) => {
                     setStart({})
                     setWall(new Array(20).fill(new Array(20).fill(false)))
                     setGrid(defaultGrid)
+                    setMode('idle')
                     console.log("RESET")
                 }}> 
                     Reset
