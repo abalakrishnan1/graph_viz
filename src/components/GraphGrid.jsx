@@ -1,4 +1,4 @@
-import { Grid, Center, Button, Stack } from '@chakra-ui/react';
+import { Grid, Center, Button, Stack, useToast } from '@chakra-ui/react';
 import {
     PriorityQueue
 } from '@datastructures-js/priority-queue';
@@ -39,6 +39,8 @@ const GraphGrid = (props) => {
     const cameFrom = useRef()
     const gScore = useRef()
     const fScore = useRef()
+    const toast = useToast()
+
 
     const handleMouseEnter = async (i, j) => {
         if(JSON.stringify({i: i, j: j}) !== JSON.stringify(start)
@@ -121,6 +123,7 @@ const GraphGrid = (props) => {
         openSet.current.enqueue(JSON.stringify(start))
 
         let current_done; 
+        let target_reached = false
 
         while (!openSet.current.isEmpty()) {
             // console.log(openSet.current.toArray())
@@ -130,6 +133,7 @@ const GraphGrid = (props) => {
             if (current.i === finish.i && current.j === finish.j) {
                 console.log("DONE DONE DONE")
                 current_done = current
+                target_reached = true
                 break                
             }
 
@@ -173,8 +177,10 @@ const GraphGrid = (props) => {
 
         let new_grid = JSON.parse(JSON.stringify(grid))
         // console.log(new_grid)
+        let len = 0
         while (cameFrom.current.has(JSON.stringify(current_done))) {
             // console.log("current_done: ", current_done)
+            len += 1
             new_grid = new_grid.map(elem => {
                 if (current_done.i === elem.i && current_done.j === elem.j) {
                     return {i: elem.i, j: elem.j, id: elem.id, path: true, open: false}
@@ -184,6 +190,18 @@ const GraphGrid = (props) => {
         }
 
         setGrid(new_grid)
+
+        if (!target_reached) {
+            toast({
+                description: "no valid path"
+
+            })
+        } else {
+            toast({
+                description: "success!"
+            })
+        }
+
     }
 
     return (
@@ -227,6 +245,7 @@ const GraphGrid = (props) => {
                     setStart({})
                     setWall(new Array(20).fill(new Array(20).fill(false)))
                     setGrid(defaultGrid)
+                    setDrag(false)
                     setMode('idle')
                     console.log("RESET")
                 }}> 
