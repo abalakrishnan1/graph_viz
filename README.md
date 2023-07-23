@@ -1,4 +1,4 @@
-pathfinding visualizer using A* algorithm
+pathfinder using A* algorithm
 More about A* algorithm implementation and features:
 - uses priority queue sorted by the F score of the nodes
 - Hashmaps provide quick lookup for G score and H scores for calculating F score
