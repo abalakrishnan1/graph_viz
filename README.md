@@ -1,4 +1,10 @@
-pathfinding visualizer using A*
+pathfinding visualizer using A* algorithm
+More about A* algorithm implementation and features:
+- uses priority queue sorted by the F score of the nodes
+- Hashmaps provide quick lookup for G score and H scores for calculating F score
+- UI allows you to reset the start and end point
+- wall feature: can add walls to create obstructions that the algorithm needs to work around
+
 ### `npm start`
 
 Runs the app in the development mode.\
