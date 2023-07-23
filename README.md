@@ -4,6 +4,10 @@ More about A* algorithm implementation and features:
 - Hashmaps provide quick lookup for G score and H scores for calculating F score
 - UI allows you to reset the start and end point
 - wall feature: can add walls to create obstructions that the algorithm needs to work around
+- React.js
+  - Nodes handle their own state and lift state up when there is an event
+  - Walls are handled by click/drag state event
+  - The grid uses Chakra UI with GridItem
 
 ### `npm start`
 
