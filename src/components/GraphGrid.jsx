@@ -1,4 +1,4 @@
-import { Grid, Center, Button, Stack, useToast } from '@chakra-ui/react';
+import { Grid, Center, Button, Stack, useToast, Text } from '@chakra-ui/react';
 import {
     PriorityQueue
 } from '@datastructures-js/priority-queue';
@@ -10,7 +10,7 @@ import {v4 as uuidv4} from 'uuid';
 const defaultGrid = [];
 
 for (let i=0; i<20; i++) {
-        for(let j=0; j<30; j++) {
+        for(let j=0; j<20; j++) {
             defaultGrid.push({i: i, j: j, id: uuidv4(), path: false, open: false})
         }
 }
@@ -27,10 +27,10 @@ const neighbors = [
 ];
 
 const GraphGrid = (props) => {
-    
+
     const [grid, setGrid] = useState(defaultGrid);
     const [mode, setMode] = useState('idle')
-    const [wall, setWall] = useState(new Array(20).fill(new Array(30).fill(false)))
+    const [wall, setWall] = useState(new Array(20).fill(new Array(20).fill(false)))
     const [start, setStart] = useState({})
     const [drag, setDrag] = useState(false)
     const [finish, setFinish] = useState({})
@@ -109,9 +109,9 @@ const GraphGrid = (props) => {
         closedSet.current = []
 
         for (let i = 0; i < 20; i++) {
-            for (let j = 0; j < 30; j++) {
+            for (let j = 0; j < 20; j++) {
                 gScore.current.set(JSON.stringify({i: i, j: j}), dist({i: i, j: j}, start))
-                fScore.current.set(JSON.stringify({i: i, j: j}), 600)
+                fScore.current.set(JSON.stringify({i: i, j: j}), 400)
             }
         }
         
@@ -147,7 +147,7 @@ const GraphGrid = (props) => {
                     current.i + neighbor.i >= 0
                     && current.i + neighbor.i < 20
                     && current.j + neighbor.j >= 0
-                    && current.j + neighbor.j < 30
+                    && current.j + neighbor.j < 20
                     && !wall[current.i + neighbor.i][current.j + neighbor.j]
                     ) {
                     
@@ -207,6 +207,9 @@ const GraphGrid = (props) => {
 
     return (
         <>
+        <Text align={"center"} fontSize={40} fontFamily={"mono"} paddingTop={10} margin={"auto"}>
+                A * Algorithm Path Finder 
+            </Text>
             <Center height='75vh' width='auto'>
             <Grid templateColumns='repeat(20, 1fr)' templateRows='repeat(20, 1fr)' gridGap={'1'}>
             
@@ -244,7 +247,7 @@ const GraphGrid = (props) => {
                 <Button onClick={() => {
                     setFinish({})
                     setStart({})
-                    setWall(new Array(20).fill(new Array(30).fill(false)))
+                    setWall(new Array(20).fill(new Array(20).fill(false)))
                     setGrid(defaultGrid)
                     setDrag(false)
                     setMode('idle')
