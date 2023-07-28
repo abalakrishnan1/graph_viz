@@ -194,12 +194,14 @@ const GraphGrid = (props) => {
 
         if (!target_reached) {
             toast({
-                description: "no valid path"
+                description: "no valid path",
+                status: 'error'
 
             })
         } else {
             toast({
-                description: "success!"
+                description: "path generated!", 
+                status: 'success'
             })
         }
 
