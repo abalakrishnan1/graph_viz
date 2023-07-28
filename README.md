@@ -1,10 +1,13 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
+pathfinder using A* algorithm
+More about A* algorithm implementation and features:
+- uses priority queue sorted by the F score of the nodes
+- Hashmaps provide quick lookup for G score and H scores for calculating F score
+- UI allows you to reset the start and end point
+- wall feature: can add walls to create obstructions that the algorithm needs to work around
+- React.js
+  - Nodes handle their own state and lift state up when there is an event
+  - Walls are handled by click/drag state event
+  - The grid uses Chakra UI with GridItem
 
 ### `npm start`
 
