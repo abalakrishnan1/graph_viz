@@ -9,6 +9,10 @@ More about A* algorithm implementation and features:
   - Walls are handled by click/drag state event
   - The grid uses Chakra UI with GridItem
 
+Todo:
+- animation of path
+- fill-square animation
+- extra alg?
 ### `npm start`
 
 Runs the app in the development mode.\
